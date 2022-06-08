@@ -249,12 +249,19 @@ class IndexDashboardConsumer(AsyncJsonWebsocketConsumer):
 
                 customer_monitoring_data_returned = customer_energy_usage_report(node, from_date, to_date)
 
-                date_count = len(customer_monitoring_data_returned[0])
-                value_count = len(customer_monitoring_data_returned[1])
-                sum_currency_value = json.dumps(customer_monitoring_data_returned[2])
-                sum_elect_value = json.dumps(customer_monitoring_data_returned[3])
-                returned_date_list = json.dumps(list(customer_monitoring_data_returned[0]))
-                returned_value_list = json.dumps(list(customer_monitoring_data_returned[1]), use_decimal=True)
+                #date_count = len(customer_monitoring_data_returned[0])
+                #value_count = len(customer_monitoring_data_returned[1])
+                #sum_currency_value = json.dumps(customer_monitoring_data_returned[2])
+                #sum_elect_value = json.dumps(customer_monitoring_data_returned[3])
+                #returned_date_list = json.dumps(list(customer_monitoring_data_returned[0]))
+                #returned_value_list = json.dumps(list(customer_monitoring_data_returned[1]), use_decimal=True)
+                
+                date_count = ''
+                value_count = 0
+                sum_currency_value = json.dumps(0)
+                sum_elect_value = json.dumps(0)
+                returned_date_list = json.dumps(list([]))
+                returned_value_list = json.dumps(list([]))
 
                 await self.send_json({
                     "messages_payload": "customer_monitoring_data",

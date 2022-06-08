@@ -78,10 +78,12 @@ def customer_energy_usage_report(node_id, from_date, to_date):
     #my_database = json........(database)
     #reading_type = 1
     #my_node_id = 11
-    
+    print('start_date' + start_date)
+    print('end_date' + end_date)
+    rlist = ''
     try:
         connection = mysql.connector.connect(host=my_host, user=my_user, password=my_password, database=my_database, port=my_port)
-        _userRef = '12345Neilson'
+        _userRef = '5678Dutoit'
         cur = connection.cursor()
         # cur.callproc("FindLastReading", [my_node_id, reading_type,])
         #cur.callproc("squservalueselectricityimportfromutilityday", [_userRef,])
@@ -100,51 +102,58 @@ def customer_energy_usage_report(node_id, from_date, to_date):
             cur.close()
             connection.close()
             print("connection is closed")
-    
-    df1 = pd.DataFrame(rlist)
-    node_period = df1
-    if start_date == '' and end_date != '':
+    if rlist:
+        df1 = pd.DataFrame(rlist)
+        node_period = df1
+        if start_date == '' and end_date != '':
 
-        # Change date for MySQL
-        if end_date:
-            end_date = end_date.replace('-','/')
-        new_period = node_period[(node_period[5] <= end_date)]
-        
-    elif start_date != '' and end_date != '':
-        # Change date for MySQL
-        if start_date:
+            # Change date for MySQL
+            if end_date:
+                end_date = end_date.replace('-','/')
+            new_period = node_period[(node_period[5] <= end_date)]
+            
+        elif start_date != '' and end_date != '':
+            # Change date for MySQL
+            if start_date:
+                start_date = start_date.replace('-','/')
+            # Change date for MySQL
+            if end_date:
+                end_date = end_date.replace('-','/')
+            new_period = node_period[(node_period[5] >= start_date) & (node_period[5] <= end_date)]
+        elif end_date == '' and start_date != '':
+            # Change date for MySQL
             start_date = start_date.replace('-','/')
-        # Change date for MySQL
-        if end_date:
-            end_date = end_date.replace('-','/')
-        new_period = node_period[(node_period[5] >= start_date) & (node_period[5] <= end_date)]
-    elif end_date == '' and start_date != '':
-        # Change date for MySQL
-        start_date = start_date.replace('-','/')
-        new_period = node_period[(node_period[5] >= start_date)]
+            new_period = node_period[(node_period[5] >= start_date)]
+        else:
+            
+            new_period = node_period
+        # To display dataframe
+        table_content = new_period.to_html()
+        df = pd.DataFrame(new_period, columns=[5,8,7])
+        currency_value = df[7]
+        elect_value = df[8]
+
+        sum_currency_value = currency_value.sum()
+        sum_elect_value = elect_value.sum()
+
+        # data['total'] = data['age'].sum()
+        x = []
+        y = []
+
+        for column in df:
+            columnSeriesObj = df[column]
+            if column == 5:
+                x = columnSeriesObj.values
+            elif column == 7:
+                y = columnSeriesObj.values
+        return x, y, sum_currency_value, sum_elect_value
     else:
-        
-        new_period = node_period
-    # To display dataframe
-    table_content = new_period.to_html()
-    df = pd.DataFrame(new_period, columns=[5,8,7])
-    currency_value = df[7]
-    elect_value = df[8]
-
-    sum_currency_value = currency_value.sum()
-    sum_elect_value = elect_value.sum()
-
-    # data['total'] = data['age'].sum()
-    x = []
-    y = []
-
-    for column in df:
-        columnSeriesObj = df[column]
-        if column == 5:
-            x = columnSeriesObj.values
-        elif column == 7:
-            y = columnSeriesObj.values
-    return x, y, sum_currency_value, sum_elect_value
+        x = 0
+        y = 0
+        sum_currency_value = 0
+        sum_elect_value = 0
+        return x, y, sum_currency_value, sum_elect_value
+    
 
 
 def get_list_nodes(user_name):

@@ -9,7 +9,9 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Sharp" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.1/chart.min.js" integrity="sha512-QSkVNOCYLtj73J4hbmVoOV6KVZuMluZlioC+trLpewV8qMjsWqlIQvkn1KGX2StWvPMdWGBqim1xlC8krl1EKQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 	<link rel="stylesheet" href="{% static 'dashboard/css/style9.css' %}">
-
+<!-- jquery -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.js" integrity="sha512-WNLxfP/8cVYL9sj8Jnp6et0BkubLP31jhTG9vhL/F5uEZmg5wEzKoXp1kJslzPQWwPT1eyMiSxlKCgzHLOTOTQ==" crossorigin="anonymous"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
 </head>
@@ -428,8 +430,9 @@
 		{% if debug_mode %}
 			var ws_path = ws_scheme + '://' + window.location.host + "/dashboard/" + userName + "/"; // development
 		{% else %}
-			var ws_path = ws_scheme + '://' + window.location.host + ":8001/dashboard/index_dashboard/" + userName + "/"; // production
+			var ws_path = ws_scheme + '://' + window.location.host + ":8001/dashboard/" + userName + "/"; // production
 		{% endif %}
+        console.log('path', ws_path)
 
 		// console.log("Connecting to " + ws_path);
 		dashSocket = new WebSocket(ws_path);
@@ -1163,6 +1166,7 @@
 
     //-------------- Get User Data ---------------------------------//
     function getUserProfileData() {
+        console.log('get user data profile')
         var my_user = "{{request.user.username | safe}}"
         var user_name  = ''
         user_name = my_user
@@ -1303,6 +1307,7 @@
     }
 
     dashSocket.addEventListener("open", function(e){
+        console.log('open open open')
             startUpGetContactUsNotifications()
 			startUpGetNodeList()
                 // MySql Data retrieval
@@ -1326,6 +1331,7 @@
             "toDate": toDate,
             "user_name": user_name,
         }))
+        console.log('okay... Im going to send')
     })
 
 function dateFormat(myDate) {
